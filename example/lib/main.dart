@@ -56,20 +56,22 @@ class _MyAppState extends State<MyApp> {
                 FlutterVpn.instance.initSDK();
               },),
               Text('token验证登录'),
-              TextField(decoration: new InputDecoration(
-                  labelText: "请输入服务器url",
-                  contentPadding: const EdgeInsets.only(bottom:15.0)),keyboardType: TextInputType.text,controller: urlController,),
-              TextField(decoration: new InputDecoration(
-                  labelText: "请输入token",
-                  contentPadding: const EdgeInsets.only(bottom:15.0)),keyboardType: TextInputType.text,controller: tokenController,),
-              TextField(decoration: new InputDecoration(
+//              TextField(decoration: new InputDecoration(
+//                  labelText: "请输入服务器url",
+//                  contentPadding: const EdgeInsets.only(bottom:15.0)),keyboardType: TextInputType.text,controller: urlController,),
+                        TextField(decoration: new InputDecoration(
                   labelText: "请输入vpn地址",
                   contentPadding: const EdgeInsets.only(bottom:15.0)),keyboardType: TextInputType.text,controller: vpnController,),
-              RaisedButton(child: Text('登录'),onPressed: (){
-                String url = urlController.text;
+
+
+      TextField(decoration: new InputDecoration(
+                  labelText: "请输入token",
+                  contentPadding: const EdgeInsets.only(bottom:15.0)),keyboardType: TextInputType.text,controller: tokenController,),
+             RaisedButton(child: Text('登录'),onPressed: (){
+//                String url = urlController.text;
                 String token = tokenController.text;
                 String vpn = vpnController.text;
-                FlutterVpn.instance.startPrimaryAuth(vpn, url, token);
+                FlutterVpn.instance.startPrimaryAuth(vpn, token);
               },),
 
 

@@ -35,10 +35,10 @@ class FlutterVpn {
 
   ///vpn验证
   Future<bool> startPrimaryAuth(
-      String vpnPathStr, String servicePathStr, String tokenStr) async {
+      String vpnPathStr, String tokenStr) async {
     Map<String, dynamic> authMap = new Map();
     authMap[Constants.VPN_PATH_PARAM_KEY] = vpnPathStr;
-    authMap[Constants.SERVICE_PATH_PARAM_KEY] = servicePathStr;
+//    authMap[Constants.SERVICE_PATH_PARAM_KEY] = servicePathStr;
     authMap[Constants.TOKEN_PARAM_KEY] = tokenStr;
     return await _channel
         .invokeMethod('startPrimaryAuth', authMap)

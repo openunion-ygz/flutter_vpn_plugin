@@ -2,18 +2,20 @@ package com.opun.flutter_vpn;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.sangfor.sdk.SFMobileSecuritySDK;
+import com.sangfor.sdk.base.SFAuthResultListener;
+import com.sangfor.sdk.base.SFAuthType;
+import com.sangfor.sdk.base.SFBaseMessage;
 import com.sangfor.sdk.base.SFSDKFlags;
 import com.sangfor.sdk.base.SFSDKMode;
+
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static com.sangfor.sdk.base.SFSDKMode.MODE_SANDBOX;
 import static com.sangfor.sdk.base.SFSDKMode.MODE_VPN;
@@ -47,9 +49,10 @@ public class FlutterVpnPlugin implements MethodCallHandler, PluginRegistry.Reque
   public void onMethodCall(MethodCall call, Result result) {
     mResult = result;
     switch (call.method) {
+
       case "initSDK": {
         boolean isInitSucc = false;
-
+/*
         //只使用VPN功能场景:表明启用VPN安全接入功能,详情参考集成指导文档
         SFSDKMode sdkMode = MODE_VPN;
 //        //只使用安全沙箱功能场景:表明启用安全沙箱功能,详情参考集成指导文档
@@ -90,15 +93,36 @@ public class FlutterVpnPlugin implements MethodCallHandler, PluginRegistry.Reque
 
         result.success(isInitSucc);
         break;
+
+ */
       }
+
       case "startPrimaryAuth": {
         String vpnPath = call.argument(Constants.PARAM_KEY_VPN);
-        String servicePath = call.argument(Constants.PARAM_KEY_SERVICE);
         String token = call.argument(Constants.PARAM_KEY_TOKEN);
         Log.e("vpnPath ==>", vpnPath);
-        Log.e("servicePath ==>", servicePath);
         Log.e("token ==>", token);
-        SFMobileSecuritySDK.getInstance().startPrimaryAuth(vpnPath, servicePath, token);
+        SFMobileSecuritySDK.getInstance().startPasswordAuth(vpnPath, token,"");
+        /**
+         * 设置认证回调,认证结果在SFAuthResultListener的onAuthSuccess、onAuthFailed、onAuthProgress中返回
+         * 如果不设置，将接收不到认证结果
+         */
+        SFMobileSecuritySDK.getInstance().setAuthResultListener(new SFAuthResultListener() {
+          @Override
+          public void onAuthSuccess(SFBaseMessage sfBaseMessage) {
+            Log.e("onAuthSuccess ===>",""+sfBaseMessage.mErrStr+" code :"+sfBaseMessage.mErrCode);
+          }
+
+          @Override
+          public void onAuthFailed(SFAuthType sfAuthType, SFBaseMessage sfBaseMessage) {
+            Log.e("onAuthFailed ===>",""+sfBaseMessage.mErrStr+" code :"+sfBaseMessage.mErrCode);
+          }
+
+          @Override
+          public void onAuthProgress(SFAuthType sfAuthType, SFBaseMessage sfBaseMessage) {
+
+          }
+        });
         result.success(null);
         break;
       }
