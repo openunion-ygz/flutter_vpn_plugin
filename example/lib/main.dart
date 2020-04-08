@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_vpn/flutter_vpn.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() => runApp(MyApp());
 
@@ -71,7 +72,15 @@ class _MyAppState extends State<MyApp> {
 //                String url = urlController.text;
                 String token = tokenController.text;
                 String vpn = vpnController.text;
-                FlutterVpn.instance.startPrimaryAuth(vpn, token);
+                FlutterVpn.instance.startPrimaryAuth(vpn, token).then((isAuth) {
+                  print("vpn验证 ===>$isAuth");
+                  if(isAuth){
+                    Fluttertoast.showToast(msg: "vpn验证成功");
+                  }else{
+                    Fluttertoast.showToast(msg: "vpn验证失败！");
+                  }
+
+                });
               },),
 
 

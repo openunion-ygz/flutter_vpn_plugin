@@ -1,6 +1,8 @@
 package com.opun.flutter_vpn;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.sangfor.sdk.SFMobileSecuritySDK;
@@ -30,6 +32,7 @@ public class FlutterVpnPlugin implements MethodCallHandler, PluginRegistry.Reque
   private final MethodChannel channel;
   private MethodChannel.Result mResult;
   private SFSDKMode mSDKMode;
+  private Handler mHandler;
 
   /** Plugin registration. */
   public static void registerWith(PluginRegistry.Registrar registrar) {
@@ -42,6 +45,17 @@ public class FlutterVpnPlugin implements MethodCallHandler, PluginRegistry.Reque
     this.activity = r.activity();
     this.channel = new MethodChannel(registrar.messenger(), NAMESPACE + "/methods");
     channel.setMethodCallHandler(this);
+    mHandler = new Handler(){
+      @Override
+      public void handleMessage(Message msg) {
+        Log.e("handleMessage ===>",msg.what+"");
+        if (msg.what == 1000){
+          mResult.success(true);
+        }else {
+          mResult.success(false);
+        }
+      }
+    };
   }
 
 
@@ -90,11 +104,11 @@ public class FlutterVpnPlugin implements MethodCallHandler, PluginRegistry.Reque
           Toast.makeText(activity.getApplicationContext(), "SDK模式错误", Toast.LENGTH_LONG).show();
         }
         mSDKMode = sdkMode;
-
+ */
         result.success(isInitSucc);
         break;
 
- */
+
       }
 
       case "startPrimaryAuth": {
@@ -107,15 +121,22 @@ public class FlutterVpnPlugin implements MethodCallHandler, PluginRegistry.Reque
          * 设置认证回调,认证结果在SFAuthResultListener的onAuthSuccess、onAuthFailed、onAuthProgress中返回
          * 如果不设置，将接收不到认证结果
          */
+        Message msg = mHandler.obtainMessage();
         SFMobileSecuritySDK.getInstance().setAuthResultListener(new SFAuthResultListener() {
           @Override
           public void onAuthSuccess(SFBaseMessage sfBaseMessage) {
             Log.e("onAuthSuccess ===>",""+sfBaseMessage.mErrStr+" code :"+sfBaseMessage.mErrCode);
+//            mResult.success(true);
+           msg.what = 1000;
+           mHandler.sendMessage(msg);
           }
 
           @Override
           public void onAuthFailed(SFAuthType sfAuthType, SFBaseMessage sfBaseMessage) {
             Log.e("onAuthFailed ===>",""+sfBaseMessage.mErrStr+" code :"+sfBaseMessage.mErrCode);
+//            mResult.success(false);
+            msg.what = 2000;
+            mHandler.sendMessage(msg);
           }
 
           @Override
@@ -123,7 +144,6 @@ public class FlutterVpnPlugin implements MethodCallHandler, PluginRegistry.Reque
 
           }
         });
-        result.success(null);
         break;
       }
 
