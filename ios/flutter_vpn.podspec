@@ -15,6 +15,8 @@ A new Flutter plugin.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
+  # framework 库引用配置
+  s.ios.vendored_frameworks = 'TYRZSDK.framework'
 
   s.ios.deployment_target = '8.0'
 end

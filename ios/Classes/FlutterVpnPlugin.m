@@ -3,6 +3,6 @@
 
 @implementation FlutterVpnPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftFlutterVpnPlugin registerWithRegistrar:registrar];
+ [SwiftFlutterVpnPlugin registerWithRegistrar:registrar];
 }
 @end
